@@ -21,7 +21,7 @@ LANGUAGE SQL
   DECLARE SQLSTATE CHAR(5);
         BEGIN
           INSERT INTO p2.customer(Name, Gender, Age, Pin)
-          VALUES(p_name, p_gender, p_age, p_pin);
+          VALUES(p_name, p_gender, p_age, p2.encrypt(p_pin));
             IF p_gender NOT IN ('F','M') THEN
               SET sql_code = -100;
               SET err_msg = 'Invalid gender';
@@ -51,15 +51,15 @@ CREATE OR REPLACE PROCEDURE P2.CUST_LOGIN
 LANGUAGE SQL
 BEGIN
     BEGIN
-    DECLARE password INTEGER;
-      declare c1 cursor for
-           SELECT PIN FROM p2.customer WHERE id = p_id AND pin = p_pin;
-              open c1;
-              fetch c1 into password;
-              close c1;
-      IF (password = p_pin) THEN
+       DECLARE pin_ INTEGER DEFAULT 0;
+       DECLARE id_ INTEGER DEFAULT 0;
+       SET pin_ = (SELECT pin FROM p2.customer WHERE id = p_id AND pin = p2.encrypt(p_pin));
+       SET id_ = (SELECT id from p2.customer WHERE id = p_id and p2.encrypt(p_pin));
+
+      IF p_pin = p2.decrypt(pin_) AND id_ = p_id THEN
         SET valid = 1;
         SET sql_code = 000;
+        SET err_msg = 'Logged In!';
       ELSE
         SET valid = 0;
         SET err_msg = 'Invalid ID or password';
@@ -183,6 +183,6 @@ LANGUAGE SQL
 END @
 
 --
-TERMINATE@
+--TERMINATE@
 --
 --

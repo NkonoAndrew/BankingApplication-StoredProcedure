@@ -77,9 +77,15 @@ public class BankingSystem {
 					"\n 1. New Customer" +
 					"\n 2. Login" +
 					"\n 3. Cancel");
-			System.out.print("Please make a choice:");
-			input = Math.abs(in.nextInt());
+			System.out.println("Please make a choice");
 
+			String stringInput;
+			do {
+				System.out.println("Enter a number between 1-3:");
+				stringInput = in.nextLine();
+			}while (isNumeric(stringInput) == false);
+
+			input = Integer.parseInt(stringInput);
 
 			switch (input) {
 				case 1:	//Prompt for Name, Gender, Age, and Pin.  System will return a customer ID if successful.
@@ -151,8 +157,6 @@ public class BankingSystem {
 		}
 		} catch (Exception e){
 			System.out.println("Please enter correct input");
-			e.printStackTrace();
-			welcomeScreen();
 		}
 
 	}
@@ -313,7 +317,7 @@ public class BankingSystem {
 			}
 		}
 		} catch (Exception e){
-			System.out.println("Please enter data correctly:");
+			System.out.println("Program exited because you did not choose a number");
 
 		}
 
@@ -390,7 +394,6 @@ public class BankingSystem {
 		}
 		} catch (Exception e){
 			System.out.println("Please enter correct input:");
-			e.printStackTrace();
 			welcomeScreen();
 		}
 	}
